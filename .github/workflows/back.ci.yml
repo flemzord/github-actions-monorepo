@@ -1,7 +1,7 @@
 on:
   push:
     paths:
-      - './back/**'
+      - 'back/**'
 
 name: CI - Back
 jobs:
