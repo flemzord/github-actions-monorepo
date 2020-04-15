@@ -1,0 +1,84 @@
+on:
+  push:
+    paths:
+      - './front/**'
+
+name: CI - Front
+jobs:
+  Deps:
+    name: Download deps
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./front
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Use Node.js 8
+        uses: actions/setup-node@v1
+        with:
+          node-version: 8
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Run npm install
+        run: npm install
+  Lints:
+    name: Launch lints
+    needs: Download deps
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./front
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Use Node.js 8
+        uses: actions/setup-node@v1
+        with:
+          node-version: 8
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Run lint js
+        run: npm run lint:js
+      - name: Run lint scss
+        run: npm run lint:scss
+  Tests:
+    name: Launch tests
+    needs: Download deps
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./front
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Use Node.js 8
+        uses: actions/setup-node@v1
+        with:
+          node-version: 8
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Run test
+        run: npm test -- --ci
+

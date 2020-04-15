@@ -1,0 +1,90 @@
+on:
+  push:
+    paths:
+      - './back/**'
+
+name: CI - Back
+jobs:
+  Deps:
+    name: Download deps
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./back
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Run composer install
+        run: composer install --prefer-dist --dev
+  Lints:
+    name: Launch lints
+    needs: Download deps
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./back
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Run php-cs-fixer
+        run: vendor/bin/php-cs-fixer fix src/ --dry-run --diff --config .php_cs
+      - name: Run php-md
+        run: vendor/bin/phpmd src/ text phpmd.xml --exclude 'tests/,var/,vendor/' --suffixes php || true
+      - name: Run php-cpd
+        run: vendor/bin/phpcpd src/
+  Tests:
+    name: Launch tests
+    needs: Download deps
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./back
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Run php-cs-fixer
+        run: vendor/bin/php-cs-fixer fix src/ --dry-run --diff --config .php_cs
+      - name: Run php-md
+        run: vendor/bin/phpmd src/ text phpmd.xml --exclude 'tests/,var/,vendor/' --suffixes php || true
+      - name: Run php-cpd
+        run: vendor/bin/phpcpd src/
+
