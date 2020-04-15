@@ -3,6 +3,10 @@ on:
     paths:
       - 'front/**'
 
+defaults:
+  run:
+    working-directory: ./front
+
 name: CI - Front
 jobs:
   CI:
@@ -15,8 +19,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 8
-      - name: Set project dir environment var
-        run: echo ::set-env name=PROJECT_DIR::"$GITHUB_WORKSPACE/front"
       - name: Run npm install
         run: npm install
       - name: Run lint js

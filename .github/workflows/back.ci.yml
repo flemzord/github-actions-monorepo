@@ -3,6 +3,10 @@ on:
     paths:
       - 'back/**'
 
+defaults:
+  run:
+    working-directory: ./back
+
 name: CI - Back
 jobs:
   CI:
@@ -15,8 +19,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
-      - name: Set project dir environment var
-        run: echo ::set-env name=PROJECT_DIR::"$GITHUB_WORKSPACE/back"
       - name: Run composer install
         run: composer install --prefer-dist
       - name: Run php-cs-fixer
