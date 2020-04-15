@@ -1,7 +1,4 @@
-on:
-  push:
-    paths:
-      - 'back/**'
+on: push
 
 name: CI - Back
 jobs:
