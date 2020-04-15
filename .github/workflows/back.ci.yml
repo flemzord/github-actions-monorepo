@@ -28,7 +28,7 @@ jobs:
         run: composer install --prefer-dist --dev
   Lints:
     name: Launch lints
-    needs: Download deps
+    needs: Deps
     runs-on: ubuntu-latest
     env:
       working-directory: ./back
@@ -57,7 +57,7 @@ jobs:
         run: vendor/bin/phpcpd src/
   Tests:
     name: Launch tests
-    needs: Download deps
+    needs: Deps
     runs-on: ubuntu-latest
     env:
       working-directory: ./back

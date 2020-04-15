@@ -31,7 +31,7 @@ jobs:
         run: npm install
   Lints:
     name: Launch lints
-    needs: Download deps
+    needs: Deps
     runs-on: ubuntu-latest
     env:
       working-directory: ./front
@@ -58,7 +58,7 @@ jobs:
         run: npm run lint:scss
   Tests:
     name: Launch tests
-    needs: Download deps
+    needs: Deps
     runs-on: ubuntu-latest
     env:
       working-directory: ./front
