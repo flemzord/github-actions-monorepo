@@ -8,8 +8,6 @@ jobs:
   CI:
     name: CI
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./back
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -17,8 +15,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
+      - name: Set project dir environment var
+        run: echo ::set-env name=PROJECT_DIR::"$GITHUB_WORKSPACE/back"
       - name: Run composer install
-        run: composer install --prefer-dist --dev
+        run: composer install --prefer-dist
       - name: Run php-cs-fixer
         run: vendor/bin/php-cs-fixer fix src/ --dry-run --diff --config .php_cs
       - name: Run php-md
